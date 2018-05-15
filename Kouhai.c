@@ -83,10 +83,10 @@ int main () {
 				update();
 				break;
 			case 6:
-				printf("\nFim do programa.");
+				printf("\nFim do programa.\n");
 				return 0;
 			default:
-				printf("\nEscolha uma opcao valida!");
+				printf("\nEscolha uma opcao valida!\n");
 				break;
 		}
 	} while(opcao != 6);
@@ -136,7 +136,7 @@ void save () {
 	tab.personagens[tab.tamanho].id = tab.tamanho;
 	tab.personagens[tab.tamanho].nivel =  1;
 	printf("Digite o nome do Personagem: ");
-	setbuf(stdin, NULL); scanf("%[^\n]s", &tab.personagens[tab.tamanho].nome);
+	setbuf(stdin, NULL); scanf("%[^\n]s", tab.personagens[tab.tamanho].nome);
 	
 	int opcao;
 	printf("Escolha a classe do personagem: ");
