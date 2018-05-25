@@ -212,6 +212,7 @@ Personagem dungeon (Personagem personagem){
 /*Sessão do sistema de batalha
 --------------------------------------------------------*/
 
+//	Função que gerencia a mecânica de batalha do jogo.
 Personagem batalha (Personagem personagem, Inimigo inimigo) {
 
 	inimigo.vida = inimigo.vidaMax;
@@ -431,6 +432,9 @@ void update () {
 
 /*Sessão das funções de definição dos atributos de personagens, inimigos, skills e itens
 --------------------------------------------------------*/
+
+/*	Sempre que o personagem ganha EXP, essa função faz o acrescimo. Caso seja o suficiente,
+	a função de aumentar o nível será chamado.*/
 Personagem incrementoEXP (Personagem personagem, int exp){
 
 	personagem.EXP += exp;
@@ -446,6 +450,8 @@ Personagem incrementoEXP (Personagem personagem, int exp){
 	return personagem;
 }
 
+/*	Ao criar um personagem, seus atributos base são definidos pela classe
+	definida pelo jogador através dessa função. */
 Personagem definirAtributos(Personagem personagem, char classe[15]){
 	if(!strcmp(classe, "Guerreiro")){
 		personagem.EXPMax = 50;
@@ -507,6 +513,8 @@ Personagem definirAtributos(Personagem personagem, char classe[15]){
 	return personagem;
 }
 
+/*	Cada classe possui uma curva de evolução diferente. Essa função aumenta
+	os status do personagem de acordo com sua classe quando o mesmo sobe o nível.*/
 Personagem subirNivel(Personagem personagem){
 	
 	personagem.nivel += 1;
@@ -569,6 +577,7 @@ Personagem subirNivel(Personagem personagem){
 	return personagem;
 }
 
+// Os inimigos são criados por essa função.
 void definirInimigos() {
 	
 	//1� Inimigo
