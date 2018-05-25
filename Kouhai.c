@@ -373,7 +373,7 @@ void read () {
 		
 	int i = 0;
 	for (i; i < tab.tamanho;i++){	
-		printf("%d	|%s	|%d	|%s	|	%d\n", tab.personagens[i].id, tab.personagens[i].nome, tab.personagens[i].nivel,
+		printf("%d	|%15s|%d	|%15s|	%d\n", tab.personagens[i].id, tab.personagens[i].nome, tab.personagens[i].nivel,
 			tab.personagens[i].classe, tab.personagens[i].pontuacaoMax);
 	}
 }
