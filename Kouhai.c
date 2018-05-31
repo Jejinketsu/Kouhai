@@ -33,7 +33,7 @@ typedef struct {
 Tabela tab; 
 
 typedef struct {
-	Inimigo inimigos[10];
+	Inimigo inimigos[11];
 } TabelaInimigos;
 
 TabelaInimigos tab1;
@@ -218,6 +218,12 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 	inimigo.vida = inimigo.vidaMax;
 	inimigo.mana = inimigo.manaMax;
 
+	Personagem imagemP;
+	strcpy(imagemP.classe, "Imagem");
+	imagemP = definirAtributos(imagemP, "Imagem");
+
+	Inimigo imagemI = tab1.inimigos[10];
+
 	int opcao, esquiva, danoAtaque, index, cont = 0;
 	float eficienciaAtk = 0, eficienciaDfs = 0;
 	bool fuga = false;
@@ -244,7 +250,7 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 				} else {
 					eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica;
 					if((int)eficienciaAtk < inimigo.armadura){
-						eficienciaAtk = 0;
+						eficienciaAtk = 1;
 					} else {
 						inimigo.vida -= ((int)eficienciaAtk-inimigo.armadura);
 						eficienciaAtk = ((int)eficienciaAtk-inimigo.armadura);
@@ -257,8 +263,8 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 				break;
 			case 3:
 				printf("\n------------------------\n");
-				printf("|1.%s	|2.%s	|\n", personagem.skills[0], personagem.skills[1]);
-				printf("|3.%s	|4.%s	|\n", personagem.skills[2], personagem.skills[3]);
+				printf("|1.%15s| 2.%15s|\n", personagem.skills[0], personagem.skills[1]);
+				printf("|3.%15s| 4.%15s|\n", personagem.skills[2], personagem.skills[3]);
 				printf("\nQual Skill deseja usar? ");
 				scanf("%s", entrada);
 
@@ -270,7 +276,7 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 					index = escudo(entrada, "\nEntrada invalida. Escolha uma opcao valida: ");
 				}
 
-				Retorno retorno = skills(personagem, inimigo, personagem.skills[index-1]);
+				Retorno retorno = skills(personagem, imagemP, inimigo, imagemI, personagem.skills[index-1]);
 
 				personagem = retorno.personagem;
 				inimigo = retorno.inimigo;
@@ -291,7 +297,7 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 			} else {
 				eficienciaAtk = ((float)(rand()%40+80)/100)*(float)inimigo.forcaFisica;
 				if((int)eficienciaAtk < personagem.armadura+eficienciaDfs){
-					eficienciaAtk = 0;
+					eficienciaAtk = 1;
 				} else {
 					personagem.vida -= ((int)eficienciaAtk-personagem.armadura-eficienciaDfs);
 					eficienciaAtk = ((int)eficienciaAtk-personagem.armadura-eficienciaDfs);
@@ -302,6 +308,10 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 			personagem.vida = 0;
 			break;
 		}
+
+		imagemP = definirAtributos(imagemP, "Imagem");
+
+		imagemI = tab1.inimigos[10];
 
 	} while(inimigo.vida > 0 && personagem.vida > 0);
 
@@ -314,6 +324,87 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 	return personagem;
 }
 
+Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inimigo imagemI, char skill[15]){
+
+	if(!strcmp(personagem.classe, "Guerreiro")){
+		if(!strcmp(skill, "Deflect")){
+			
+		} else if(!strcmp(skill, "Castle of Stone")){
+			imagemP.armadura = 9999;
+			imagemP.resistenciaMagica = 9999;
+			printf("\nDurante este turno %s fica imune a qualquer ataque. ", personagem.nome);
+		} else if(!strcmp(skill, "Drain Resistance")){
+			
+		} else if(!strcmp(skill, "Armor Striker")){
+			imagemP.forcaFisica += (personagem.armadura)*0.20;
+			int eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica+(float)imagemI.forcaFisica;
+			if((int)eficienciaAtk < inimigo.armadura){
+				eficienciaAtk = 1;
+			} else {
+				inimigo.vida -= ((int)eficienciaAtk-inimigo.armadura);
+				eficienciaAtk = ((int)eficienciaAtk-inimigo.armadura);
+			}
+			printf("Armor Strike! Voce inflingiu %d de dano no inimigo. \n", eficienciaAtk);
+		} else {
+			printf("Não acontece nada... ");
+		}
+	} else if(!strcmp(personagem.classe, "Mago Negro")){
+		if(!strcmp(skill, "Thunder")){
+			
+		} else if(!strcmp(skill, "Fire")){
+
+		} else if(!strcmp(skill, "Aqua")){
+			
+		} else if(!strcmp(skill, "Swamp Dust")){
+			
+		} else {
+			printf("Não acontece nada... ");
+		}
+	} else if(!strcmp(personagem.classe, "Mago Branco")){
+		if(!strcmp(skill, "Life Drain")){
+
+		} else if(!strcmp(skill, "Regen")){
+
+		} else if(!strcmp(skill, "Vitality Burst")){
+			
+		} else if(!strcmp(skill, "Unfair Exchange")){
+			
+		} else {
+			printf("Não acontece nada... ");
+		}
+	} else if(!strcmp(personagem.classe, "Samurai")){
+		if(!strcmp(skill, "Juuhazan")){
+
+		} else if(!strcmp(skill, "Rekkyoudan")){
+
+		} else if(!strcmp(skill, "Raikousen")){
+			
+		} else if(!strcmp(skill, "Hyouryuushou")){
+			
+		} else {
+			printf("Não acontece nada... ");
+		}
+	} else if(!strcmp(personagem.classe, "Arqueiro")){
+		if(!strcmp(skill, "Ultra Instinct")){
+
+		} else if(!strcmp(skill, "Aim: Weak Point")){
+
+		} else if(!strcmp(skill, "Focus")){
+			
+		} else if(!strcmp(skill, "Speed Shot")){
+			
+		} else {
+			printf("Não acontece nada... ");
+		}
+	}	
+
+	Retorno retorno;
+	retorno.personagem = personagem;
+	retorno.inimigo = inimigo;
+
+	return retorno;
+
+}
 /*Fim da sessão do sistema de batalha
 --------------------------------------------------------*/
 
@@ -453,6 +544,12 @@ Personagem incrementoEXP (Personagem personagem, int exp){
 /*	Ao criar um personagem, seus atributos base são definidos pela classe
 	definida pelo jogador através dessa função. */
 Personagem definirAtributos(Personagem personagem, char classe[15]){
+
+	int i;
+	for(i = 0; i < 4; i++){
+		strcpy(personagem.skills[i], "Vazio");
+	}
+
 	if(!strcmp(classe, "Guerreiro")){
 		personagem.EXPMax = 50;
 		personagem.vidaMax = 45; 
@@ -463,6 +560,8 @@ Personagem definirAtributos(Personagem personagem, char classe[15]){
 		personagem.agilidade = 2.0;
 		personagem.armadura = 15.0;
 		personagem.resistenciaMagica = 10.0;
+		strcpy(personagem.skills[0], "Armor Striker");
+		strcpy(personagem.skills[1], "Castle of Stone");
 	} else if(!strcmp(classe, "Mago Negro")){
 		personagem.EXPMax = 65;
 		personagem.vidaMax = 20; 
@@ -503,11 +602,16 @@ Personagem definirAtributos(Personagem personagem, char classe[15]){
 		personagem.agilidade = 20.0;
 		personagem.armadura = 2.0;
 		personagem.resistenciaMagica = 2.0;
-	}
-
-	int i;
-	for(i = 0; i < 4; i++){
-		strcpy(personagem.skills[i], "Vazio");
+	} else if(!strcmp(classe, "Imagem")){
+		personagem.EXPMax = 0;
+		personagem.vidaMax = 0; 
+		personagem.manaMax = 0;
+		personagem.forcaFisica = 0;
+		personagem.forcaMagica = 0;
+		personagem.sorte = 0;
+		personagem.agilidade = 0;
+		personagem.armadura = 0;
+		personagem.resistenciaMagica = 0;
 	}
 
 	return personagem;
@@ -729,78 +833,22 @@ void definirInimigos() {
 	tab1.inimigos[9].agilidade = 1;
 	tab1.inimigos[9].armadura = 10;
 	tab1.inimigos[9].resistenciaMagica = 0;
+
+	//11� Inimigo
+	tab1.inimigos[10].id = 10;
+	tab1.inimigos[10].nivel = 1;
+	tab1.inimigos[10].pontos = 0;
+	tab1.inimigos[10].EXP = 0;
+	strcpy(tab1.inimigos[10].nome, "Imagem");
+	tab1.inimigos[10].vidaMax = 0;
+	tab1.inimigos[10].manaMax = 0;
+	tab1.inimigos[10].forcaFisica = 0;
+	tab1.inimigos[10].forcaMagica = 0;	
+	tab1.inimigos[10].sorte = 0;
+	tab1.inimigos[10].agilidade = 0;
+	tab1.inimigos[10].armadura = 0;
+	tab1.inimigos[10].resistenciaMagica = 0;
 }
 
-Retorno skills (Personagem personagem, Inimigo inimigo, char skill[15]){
-
-	if(!strcmp(personagem.classe, "Guerreiro")){
-		if(!strcmp(skill, "Deflect")){
-			
-		} else if(!strcmp(skill, "Castle of Stone")){
-			
-		} else if(!strcmp(skill, "Drain Resistance")){
-			
-		} else if(!strcmp(skill, "Armor Striker")){
-			
-		} else {
-			printf("Não acontece nada... ");
-		}
-	} else if(!strcmp(personagem.classe, "Mago Negro")){
-		if(!strcmp(skill, "Thunder")){
-			
-		} else if(!strcmp(skill, "Fire")){
-
-		} else if(!strcmp(skill, "Aqua")){
-			
-		} else if(!strcmp(skill, "Swamp Dust")){
-			
-		} else {
-			printf("Não acontece nada... ");
-		}
-	} else if(!strcmp(personagem.classe, "Mago Branco")){
-		if(!strcmp(skill, "Life Drain")){
-
-		} else if(!strcmp(skill, "Regen")){
-
-		} else if(!strcmp(skill, "Vitality Burst")){
-			
-		} else if(!strcmp(skill, "Unfair Exchange")){
-			
-		} else {
-			printf("Não acontece nada... ");
-		}
-	} else if(!strcmp(personagem.classe, "Samurai")){
-		if(!strcmp(skill, "Juuhazan")){
-
-		} else if(!strcmp(skill, "Rekkyoudan")){
-
-		} else if(!strcmp(skill, "Raikousen")){
-			
-		} else if(!strcmp(skill, "Hyouryuushou")){
-			
-		} else {
-			printf("Não acontece nada... ");
-		}
-	} else if(!strcmp(personagem.classe, "Arqueiro")){
-		if(!strcmp(skill, "Ultra Instinct")){
-
-		} else if(!strcmp(skill, "Aim: Weak Point")){
-
-		} else if(!strcmp(skill, "Focus")){
-			
-		} else if(!strcmp(skill, "Speed Shot")){
-			
-		} else {
-			printf("Não acontece nada... ");
-		}
-	}	
-
-	Retorno retorno;
-	retorno.personagem = personagem;
-	retorno.inimigo = inimigo;
-
-	return retorno;
-
-}
 /*Fim da sessão de definição de atributos
 --------------------------------------------------------*/
