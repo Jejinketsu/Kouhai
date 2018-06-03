@@ -38,12 +38,14 @@ typedef struct {
 
 TabelaInimigos tab1;
 
-/*	Struct para duplo retorno após o uso de uma skill ou item.
-	Dessa forma será possível retornar as alterações em dois
+/*	Struct para multiplo retorno após o uso de uma skill.
+	Dessa forma será possível retornar as alterações em vários
 	chars ao mesmo tempo através das funções. */
 typedef struct {
 	Inimigo inimigo;
 	Personagem personagem;
+	Inimigo inimigoImagem;
+	Personagem personagemImagem;
 } Retorno;
 
 //Inicialização das funções---------------------
@@ -245,7 +247,7 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 		switch(opcao){
 			case 1:
 				esquiva = rand()%200+1;
-				if(esquiva <= inimigo.agilidade+inimigo.sorte){
+				if(esquiva <= inimigo.agilidade+inimigo.sorte+imagemI.agilidade+imagemI.sorte){
 					printf("Inimigo Esquivou! \n");
 				} else {
 					eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica;
@@ -280,6 +282,8 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 
 				personagem = retorno.personagem;
 				inimigo = retorno.inimigo;
+				imagemI = retorno.inimigoImagem;
+				imagemP = retorno.personagemImagem;
 				
 				break;
 			case 4:
@@ -292,6 +296,7 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 		}
 
 		if(!fuga){
+			esquiva = rand()%200+1;
 			if(esquiva <= personagem.agilidade+personagem.sorte){
 				printf("Voce Esquivou! \n");
 			} else {
@@ -309,10 +314,6 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 			break;
 		}
 
-		imagemP = definirAtributos(imagemP, "Imagem");
-
-		imagemI = tab1.inimigos[10];
-
 	} while(inimigo.vida > 0 && personagem.vida > 0);
 
 	if(personagem.vida > 0){
@@ -321,11 +322,16 @@ Personagem batalha (Personagem personagem, Inimigo inimigo) {
 		personagem = incrementoEXP(personagem, inimigo.EXP);
 	}
 
+	imagemP = definirAtributos(imagemP, "Imagem");
+
+	imagemI = tab1.inimigos[10];
+
 	return personagem;
 }
 
 Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inimigo imagemI, char skill[15]){
 
+	int eficienciaAtk = 0;
 	if(!strcmp(personagem.classe, "Guerreiro")){
 		if(!strcmp(skill, "Deflect")){
 			
@@ -334,15 +340,17 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 			imagemP.resistenciaMagica = 9999;
 			printf("\nDurante este turno %s fica imune a qualquer ataque. ", personagem.nome);
 		} else if(!strcmp(skill, "Drain Resistance")){
-			
+			imagemP.armadura = (inimigo.armadura * 0.1) + (personagem.vida * 0.1);
+			imagemI.armadura = 0; imagemI.armadura -= imagemP.armadura;
+			print("Você roubou %.0f da armadura do oponente. ", imagemP.armadura);
 		} else if(!strcmp(skill, "Armor Striker")){
 			imagemP.forcaFisica += (personagem.armadura)*0.20;
-			int eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica+(float)imagemI.forcaFisica;
+			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica+(float)imagemI.forcaFisica;
 			if((int)eficienciaAtk < inimigo.armadura){
 				eficienciaAtk = 1;
 			} else {
-				inimigo.vida -= ((int)eficienciaAtk-inimigo.armadura);
-				eficienciaAtk = ((int)eficienciaAtk-inimigo.armadura);
+				inimigo.vida -= ((int)eficienciaAtk-(inimigo.armadura+imagemI.armadura));
+				eficienciaAtk = ((int)eficienciaAtk-(inimigo.armadura+imagemI.armadura));
 			}
 			printf("Armor Strike! Voce inflingiu %d de dano no inimigo. \n", eficienciaAtk);
 		} else {
@@ -350,19 +358,55 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 		}
 	} else if(!strcmp(personagem.classe, "Mago Negro")){
 		if(!strcmp(skill, "Thunder")){
-			
+			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
+			if((int)eficienciaAtk < inimigo.resistenciaMagica){
+				eficienciaAtk = 1;
+			} else {
+				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+			}
+			print("Um trovão caiu no oponente, deu %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Fire")){
-
+			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
+			if((int)eficienciaAtk < inimigo.resistenciaMagica){
+				eficienciaAtk = 1;
+			} else {
+				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+			}
+			print("Voce faz uma bola de fogo que cai sobre o oponente, deu %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Aqua")){
-			
+			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
+			if((int)eficienciaAtk < inimigo.resistenciaMagica){
+				eficienciaAtk = 1;
+			} else {
+				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+			}
+			print("Uma torrente de água sai de um circulo magico em baixo do oponente, deu %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Swamp Dust")){
-			
+			int esquiva = rand()%200+1;
+			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
+			if(esquiva <= inimigo.agilidade+inimigo.sorte+imagemI.agilidade+imagemI.sorte){
+				printf("Inimigo Esquivou! \n");
+			} else {
+				imagemI.agilidade = 0; imagemI.agilidade -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+			}
+			printf("Uma nevoa se forma ao redor do inimigo, sua agilidade foi reduzida em %d. ", eficienciaAtk);
 		} else {
 			printf("Não acontece nada... ");
 		}
 	} else if(!strcmp(personagem.classe, "Mago Branco")){
 		if(!strcmp(skill, "Life Drain")){
-
+			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
+			if((int)eficienciaAtk < inimigo.resistenciaMagica){
+				eficienciaAtk = 1;
+			} else {
+				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+				personagem.vida += eficienciaAtk;
+			}
+			printf("Voce drenou %d de vida do oponente. ");
 		} else if(!strcmp(skill, "Regen")){
 
 		} else if(!strcmp(skill, "Vitality Burst")){
@@ -374,7 +418,14 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 		}
 	} else if(!strcmp(personagem.classe, "Samurai")){
 		if(!strcmp(skill, "Juuhazan")){
-
+			eficienciaAtk = ((float)(rand()%40+80)/100)*(((float)personagem.forcaMagica+(float)imagemI.forcaMagica)*2);
+			if((int)eficienciaAtk < inimigo.resistenciaMagica){
+				eficienciaAtk = 1;
+			} else {
+				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+			}
+			printf("Voce concentra seu poder na lamina da espada e ataca com um corte frontal profundo, inflinge %d de dano. ");
 		} else if(!strcmp(skill, "Rekkyoudan")){
 
 		} else if(!strcmp(skill, "Raikousen")){
@@ -401,6 +452,8 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 	Retorno retorno;
 	retorno.personagem = personagem;
 	retorno.inimigo = inimigo;
+	retorno.inimigoImagem = imagemI;
+	retorno.personagemImagem = imagemP;
 
 	return retorno;
 
@@ -521,7 +574,7 @@ void update () {
 /*Fim da sessão de CRUD
 --------------------------------------------------------*/
 
-/*Sessão das funções de definição dos atributos de personagens, inimigos, skills e itens
+/*Sessão das funções de definição dos atributos de personagens, inimigos e skills.
 --------------------------------------------------------*/
 
 /*	Sempre que o personagem ganha EXP, essa função faz o acrescimo. Caso seja o suficiente,
