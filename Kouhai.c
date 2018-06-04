@@ -342,7 +342,7 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 		} else if(!strcmp(skill, "Drain Resistance")){
 			imagemP.armadura = (inimigo.armadura * 0.1) + (personagem.vida * 0.1);
 			imagemI.armadura = 0; imagemI.armadura -= imagemP.armadura;
-			print("Você roubou %.0f da armadura do oponente. ", imagemP.armadura);
+			printf("Você roubou %.0f da armadura do oponente. ", imagemP.armadura);
 		} else if(!strcmp(skill, "Armor Striker")){
 			imagemP.forcaFisica += (personagem.armadura)*0.20;
 			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica+(float)imagemI.forcaFisica;
@@ -365,7 +365,7 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 			}
-			print("Um trovão caiu no oponente, deu %d de dano. ", eficienciaAtk);
+			printf("Um trovão caiu no oponente, deu %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Fire")){
 			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
 			if((int)eficienciaAtk < inimigo.resistenciaMagica){
@@ -374,7 +374,7 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 			}
-			print("Voce faz uma bola de fogo que cai sobre o oponente, deu %d de dano. ", eficienciaAtk);
+			printf("Voce faz uma bola de fogo que cai sobre o oponente, deu %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Aqua")){
 			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
 			if((int)eficienciaAtk < inimigo.resistenciaMagica){
@@ -383,7 +383,7 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 			}
-			print("Uma torrente de água sai de um circulo magico em baixo do oponente, deu %d de dano. ", eficienciaAtk);
+			printf("Uma torrente de água sai de um circulo magico em baixo do oponente, deu %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Swamp Dust")){
 			int esquiva = rand()%200+1;
 			eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaMagica+(float)imagemI.forcaMagica;
@@ -406,11 +406,23 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 				personagem.vida += eficienciaAtk;
 			}
-			printf("Voce drenou %d de vida do oponente. ");
+			printf("Voce drenou %d de vida do oponente. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Regen")){
 
 		} else if(!strcmp(skill, "Vitality Burst")){
-			
+			if (personagem.vidaMax >= personagem.vida){
+				printf("Nao e possivel utilizar esse ataque agora. Recupere mais vida");
+			} else {
+				eficienciaAtk = (((float)(rand()%40+80)/100)*(personagem.vida - personagem.vidaMax));
+				if((int)eficienciaAtk < inimigo.resistenciaMagica){
+					eficienciaAtk = 1;
+				} else {
+					inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
+					personagem.vida -= personagem.vidaMax;
+				}
+				printf("Vitálity Burst! A energia vital excessiva acumulada foi inteiramente descarregada no oponente.");
+				printf("\nO inimigo recebeu %d de dano. ", eficienciaAtk);
+			}
 		} else if(!strcmp(skill, "Unfair Exchange")){
 			
 		} else {
@@ -425,11 +437,18 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 				inimigo.vida -= ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 				eficienciaAtk = ((int)eficienciaAtk-(inimigo.resistenciaMagica+imagemI.resistenciaMagica));
 			}
-			printf("Voce concentra seu poder na lamina da espada e ataca com um corte frontal profundo, inflinge %d de dano. ");
+			printf("Voce concentra seu poder na lamina da espada e ataca com um corte frontal profundo, inflinge %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Rekkyoudan")){
 
 		} else if(!strcmp(skill, "Raikousen")){
-			
+			eficienciaAtk = ((float)(rand()%40+80)/100)*((float)personagem.forcaMagica+(float)imagemI.forcaMagica)+((float)personagem.forcaFisica+(float)imagemI.forcaFisica);
+			if((int)eficienciaAtk < inimigo.resistenciaMagica+inimigo.armadura){
+				eficienciaAtk = 1;
+			} else {
+				inimigo.vida -= ((int)eficienciaAtk-((inimigo.resistenciaMagica+imagemI.resistenciaMagica)+(inimigo.armadura+imagemI.armadura)));
+				eficienciaAtk = ((int)eficienciaAtk-((inimigo.resistenciaMagica+imagemI.resistenciaMagica)+(inimigo.armadura+imagemI.armadura)));
+			}
+			printf("Voce atravesa seu oponente com sua espada envolta de eletricidade numa grande velocidade, inflinge %d de dano. ", eficienciaAtk);
 		} else if(!strcmp(skill, "Hyouryuushou")){
 			
 		} else {
@@ -438,12 +457,36 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 	} else if(!strcmp(personagem.classe, "Arqueiro")){
 		if(!strcmp(skill, "Ultra Instinct")){
 
-		} else if(!strcmp(skill, "Aim: Weak Point")){
-
+		} else if(!strcmp(skill, "Aim: WeakPoint")){
+			int esquiva = rand()%200+1;
+			if(esquiva <= inimigo.agilidade+inimigo.sorte+imagemI.agilidade+imagemI.sorte){
+					printf("Inimigo Esquivou! \n");
+			} else {
+				eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica;
+				inimigo.vida -= (int)eficienciaAtk;
+				printf("Inimigo recebeu %.d de dano.\n", eficienciaAtk);
+			}
 		} else if(!strcmp(skill, "Focus")){
 			
 		} else if(!strcmp(skill, "Speed Shot")){
-			
+			int ataque = rand()%5+1;
+			printf("Voce se prepara para o combo... \n%d ATAQUES!\n", ataque);
+			for(int i = 0; i < ataque; i++){
+				int esquiva = rand()%200+1;
+				if(esquiva <= inimigo.agilidade+inimigo.sorte+imagemI.agilidade+imagemI.sorte){
+					printf("Inimigo Esquivou! \n");
+				} else {
+					eficienciaAtk = ((float)(rand()%40+80)/100)*(float)personagem.forcaFisica;
+					if((int)eficienciaAtk < inimigo.armadura){
+						eficienciaAtk = 1;
+					} else {
+						inimigo.vida -= ((int)eficienciaAtk-inimigo.armadura);
+						eficienciaAtk = ((int)eficienciaAtk-inimigo.armadura);
+					}
+					printf("Inimigo recebeu %.d de dano.\n", eficienciaAtk);
+				}
+			}
+			printf("Descanso. ");
 		} else {
 			printf("Não acontece nada... ");
 		}
@@ -625,6 +668,8 @@ Personagem definirAtributos(Personagem personagem, char classe[15]){
 		personagem.agilidade = 1.0;
 		personagem.armadura = 1.0;
 		personagem.resistenciaMagica = 2.0;
+		strcpy(personagem.skills[0], "Swamp Dust");
+		strcpy(personagem.skills[1], "Thunder");
 	} else if(!strcmp(classe, "Mago Branco")){
 		personagem.EXPMax = 60;
 		personagem.vidaMax = 20; 
@@ -635,6 +680,8 @@ Personagem definirAtributos(Personagem personagem, char classe[15]){
 		personagem.agilidade = 1.0;
 		personagem.armadura = 1.0;
 		personagem.resistenciaMagica = 2.0;
+		strcpy(personagem.skills[0], "Life Drain");
+		strcpy(personagem.skills[1], "Vitality Burst");
 	} else if(!strcmp(classe, "Samurai")){
 		personagem.EXPMax = 55;
 		personagem.vidaMax = 30; 
@@ -645,6 +692,8 @@ Personagem definirAtributos(Personagem personagem, char classe[15]){
 		personagem.agilidade = 10.0;
 		personagem.armadura = 6.0;
 		personagem.resistenciaMagica = 6.0;
+		strcpy(personagem.skills[0], "Juuhazan");
+		strcpy(personagem.skills[1], "Raikousen");
 	} else if(!strcmp(classe, "Arqueiro")){
 		personagem.EXPMax = 55;
 		personagem.vidaMax = 20; 
@@ -655,6 +704,8 @@ Personagem definirAtributos(Personagem personagem, char classe[15]){
 		personagem.agilidade = 20.0;
 		personagem.armadura = 2.0;
 		personagem.resistenciaMagica = 2.0;
+		strcpy(personagem.skills[0], "Speed Shot");
+		strcpy(personagem.skills[1], "Aim: WeakPoint");		
 	} else if(!strcmp(classe, "Imagem")){
 		personagem.EXPMax = 0;
 		personagem.vidaMax = 0; 
