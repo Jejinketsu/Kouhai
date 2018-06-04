@@ -471,7 +471,8 @@ Retorno skills (Personagem personagem, Personagem imagemP, Inimigo inimigo, Inim
 		} else if(!strcmp(skill, "Speed Shot")){
 			int ataque = rand()%5+1;
 			printf("Voce se prepara para o combo... \n%d ATAQUES!\n", ataque);
-			for(int i = 0; i < ataque; i++){
+			int i;
+			for(i = 0; i < ataque; i++){
 				int esquiva = rand()%200+1;
 				if(esquiva <= inimigo.agilidade+inimigo.sorte+imagemI.agilidade+imagemI.sorte){
 					printf("Inimigo Esquivou! \n");
